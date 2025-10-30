@@ -1,6 +1,6 @@
 package me.saharnooby.plugins.leadwires;
 
-import com.comphenix.protocol.ProtocolLibrary;
+import com.github.retrooper.packetevents.PacketEvents;
 import lombok.Getter;
 import lombok.NonNull;
 import me.saharnooby.plugins.leadwires.api.LeadWiresAPI;
@@ -18,6 +18,9 @@ import me.saharnooby.plugins.leadwires.tracker.PlayerDebugInfo;
 import me.saharnooby.plugins.leadwires.tracker.WireTracker;
 import me.saharnooby.plugins.leadwires.tracker.WireTrackerListener;
 import me.saharnooby.plugins.leadwires.wire.WireStorage;
+import me.tofaa.entitylib.APIConfig;
+import me.tofaa.entitylib.EntityLib;
+import me.tofaa.entitylib.spigot.SpigotEntityLibPlatform;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
@@ -70,9 +73,13 @@ public final class LeadWires extends JavaPlugin {
 			getLogger().log(Level.SEVERE, "Failed to load wire storage", e);
 		}
 
+		SpigotEntityLibPlatform platform = new SpigotEntityLibPlatform(this);
+		APIConfig config = new APIConfig(PacketEvents.getAPI());
+
+		EntityLib.init(platform, config);
+
 		LoadedChunkTracker chunkTracker = new LoadedChunkTracker(this);
 		Bukkit.getPluginManager().registerEvents(chunkTracker, this);
-		ProtocolLibrary.getProtocolManager().addPacketListener(chunkTracker);
 
 		this.tracker = new WireTracker(this.storage, chunkTracker);
 		Bukkit.getPluginManager().registerEvents(new WireTrackerListener(this.tracker), this);

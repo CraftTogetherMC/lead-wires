@@ -11,8 +11,8 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
     </properties>
 
     <repositories>
@@ -25,8 +25,16 @@
             <url>https://jitpack.io</url>
         </repository>
         <repository>
-            <id>dmulloy2-repo</id>
-            <url>https://repo.dmulloy2.net/nexus/repository/public/</url>
+            <id>codemc-releases</id>
+            <url>https://repo.codemc.io/repository/maven-releases/</url>
+        </repository>
+        <repository>
+            <id>codemc-snapshots</id>
+            <url>https://repo.codemc.io/repository/maven-snapshots/</url>
+        </repository>
+        <repository>
+            <id>typewriter</id>
+            <url>https://maven.typewritermc.com/external</url>
         </repository>
     </repositories>
 
@@ -34,24 +42,6 @@
         <defaultGoal>clean package</defaultGoal>
 
         <plugins>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>properties-maven-plugin</artifactId>
-                <version>1.0.0</version>
-                <executions>
-                    <execution>
-                        <phase>initialize</phase>
-                        <goals>
-                            <goal>read-project-properties</goal>
-                        </goals>
-                        <configuration>
-                            <files>
-                                <file>${project.basedir}/buildSettings.properties</file>
-                            </files>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
@@ -63,6 +53,29 @@
                     </archive>
                     <finalName>LeadWires</finalName>
                 </configuration>
+            </plugin>
+            <!-- Shade plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.4.1</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${outputDir}</outputDirectory>
+                            <finalName>LeadWires</finalName>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>me.saharnooby.plugins.leadwires.LeadWires</mainClass>
+                                </transformer>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
@@ -76,10 +89,16 @@
         </dependency>
 
         <dependency>
-            <groupId>com.comphenix.protocol</groupId>
-            <artifactId>ProtocolLib</artifactId>
-            <version>5.1.0</version>
+            <groupId>com.github.retrooper</groupId>
+            <artifactId>packetevents-spigot</artifactId>
+            <version>2.10.0</version>
             <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.Tofaa2.EntityLib</groupId>
+            <artifactId>spigot</artifactId>
+            <version>2.4.11</version>
         </dependency>
 
         <dependency>

@@ -1,11 +1,13 @@
 package me.saharnooby.plugins.leadwires.util;
 
+import com.github.retrooper.packetevents.PacketEvents;
 import me.saharnooby.plugins.leadwires.LeadWires;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
+import me.tofaa.entitylib.EntityLib;
 
 /**
  * @author saharNooby
@@ -19,45 +21,13 @@ public final class EntityId {
 
 	public static int next() {
 		try {
-			boolean v17 = NMSUtil.getMinorVersion() >= 17;
-
-			Class<?> entityClass = NMSUtil.getNMSClass(v17 ? "world.entity.Entity" : "Entity");
-
-			Field field = null;
-
-			if (v17) {
-				for (Field f : entityClass.getDeclaredFields()) {
-					if (f.getType() == AtomicInteger.class && (f.getModifiers() & Modifier.STATIC) != 0) {
-						field = f;
-
-						break;
-					}
-				}
-
-				if (field == null) {
-					throw new IllegalStateException("AtomicInteger field not found in Entity class");
-				}
-			} else {
-				field = entityClass.getDeclaredField("entityCount");
-			}
-
-			field.setAccessible(true);
-
-			if (field.getType() == Integer.TYPE) {
-				int count = (int) field.get(null);
-				field.set(null, count + 1);
-				return count;
-			} else {
-				return ((AtomicInteger) field.get(null)).incrementAndGet();
-			}
+			return nextId.incrementAndGet();
 		} catch (Exception e) {
 			if (!errorPrinted) {
-				LeadWires.getInstance().getLogger().log(Level.WARNING, "Failed to get new entity id with reflection, this may or may not cause bugs", e);
-
+				LeadWires.getInstance().getLogger().log(Level.SEVERE, "Failed to generate entity ID", e);
 				errorPrinted = true;
 			}
-
-			return nextId.incrementAndGet();
+			return -1;
 		}
 	}
 
