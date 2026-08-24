@@ -23,7 +23,7 @@ public final class Tools {
 
 	public static ItemStack getThickPlaceTool() {
 		ItemStack item = getItem(Material.STICK, "§bThick Wire Placer");
-		item.addUnsafeEnchantment(Enchantment.LUCK, 1);
+		item.addUnsafeEnchantment(Enchantment.FORTUNE, 1);
 		return item;
 	}
 
